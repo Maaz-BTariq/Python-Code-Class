@@ -22,11 +22,20 @@ for pageSelec in range(25):
         actions.move_to_element(table).send_keys("\ue00f").perform()
 
         for finder in range(1,11):
-            stringFind = "/html/body/div[1]/div[1]/div/div/div/div/div[2]/div[2]/div/div/div/div[" + str(finder) +"]"
-            dataFind = driver.find_element(By.XPATH,stringFind)
+            onelineArr = []
+            for divNum in range(1,7):
+                if divNum != 6:
+                    stringFind = "/html/body/div[1]/div[1]/div/div/div/div/div[2]/div[2]/div/div/div/div[" + str(finder) +"]/div[" + str(divNum) + "]"
+                    dataFind = driver.find_element(By.XPATH, stringFind).text
+                    onelineArr.append(dataFind)
+                else:
+                    stringFind = "/html/body/div[1]/div[1]/div/div/div/div/div[2]/div[2]/div/div/div/div[" + str(finder) +"]/div[6]/a"
+                    dataFind = driver.find_element(By.XPATH,stringFind)
+                    href = dataFind.get_attribute("href")
+                    onelineArr.append(dataFind)
 
-            if not dataFind.text in arr:
-                arr.append(dataFind.text)
+            if not onelineArr in arr:
+                arr.append(onelineArr)
 
     if pageSelec != 24:
         nextButton = driver.find_element(By.XPATH,"/html/body/div[1]/div[1]/div/div/div/div/div[3]/div/div[2]/div/div[3]/button[2]")
@@ -39,7 +48,7 @@ time.sleep(20)
 
 print(arr)
 
-arrDataframe = pd.DataFrame(arr)
+arrDataframe = pd.DataFrame(arr,columns=["Sr No","Notification No","Subject","Category","Date","Download HREF"])
 arrDataframe.to_excel("Information from Website.xlsx")
 
 driver.close()
